@@ -1,0 +1,197 @@
+import type { Topic } from '../data'
+const T = String.raw
+
+export const mechanics: Topic[] = [
+  {
+    id: 'projectile', title: 'Projectile motion', category: 'Mechanics', level: 'Beginner', duration: '8 min', accent: '#70e1ff', glyph: '↗',
+    tags: ['kinematics', 'gravity', 'parabola', 'range', 'drag', 'trajectory', 'ballistics'],
+    description: 'Why does a thrown object follow a curved path?',
+    question: 'How can something move forward and fall downward at the same time?',
+    intuition: [
+      'A projectile is an object moving only under gravity (and, if we allow it, air resistance). The key insight, due to Galileo, is that horizontal and vertical motion are independent. Gravity acts straight down, so it changes only the vertical velocity. The horizontal velocity stays constant when drag is negligible.',
+      'Picture two balls released together: one dropped, one fired sideways. They hit the ground at the same instant, because the sideways motion does not change how fast gravity pulls them down. Combine a steady forward drift with an accelerating fall and the path bends into a parabola.',
+      'In the lab above, switch on air resistance and compare the solid path with the dashed ideal parabola. Drag takes energy away continuously, so the real path is lower, shorter, and steeper on the way down.',
+    ],
+    equations: [
+      { label: 'Position', tex: T`x(t)=v_0\cos\theta\;t,\qquad y(t)=h+v_0\sin\theta\;t-\tfrac12 g t^2` },
+      { label: 'Trajectory (eliminate t)', tex: T`y=h+x\tan\theta-\dfrac{g\,x^2}{2v_0^2\cos^2\theta}` },
+      { label: 'Range from level ground (h = 0)', tex: T`R=\dfrac{v_0^2\sin 2\theta}{g}`, note: 'Maximum at θ = 45°; θ and 90° − θ give the same range.' },
+      { label: 'Maximum height', tex: T`H=h+\dfrac{v_0^2\sin^2\theta}{2g}` },
+      { label: 'Quadratic drag (used in the simulation)', tex: T`\vec a=-g\,\hat y-k\,|\vec v|\,\vec v,\qquad k=\dfrac{\rho C_d A}{2m}` },
+    ],
+    variables: [
+      { sym: 'v_0', meaning: 'launch speed', unit: 'm/s' }, { sym: '\\theta', meaning: 'launch angle above horizontal', unit: '°' },
+      { sym: 'h', meaning: 'launch height above the ground', unit: 'm' }, { sym: 'g', meaning: 'gravitational acceleration (9.81 on Earth, 1.62 on the Moon)', unit: 'm/s²' },
+      { sym: 'k', meaning: 'drag coefficient per unit mass', unit: 'm⁻¹' },
+    ],
+    derivation: {
+      title: 'Deriving the range formula',
+      steps: [
+        { text: 'Take launch from the ground (h = 0). Vertical position is y = v₀ sinθ · t − ½gt². The ball lands when y = 0 again:', tex: T`t\left(v_0\sin\theta-\tfrac12 g t\right)=0\;\Rightarrow\;t_f=\dfrac{2v_0\sin\theta}{g}` },
+        { text: 'During that time the horizontal velocity v₀ cosθ never changes, so the range is speed × time:', tex: T`R=v_0\cos\theta\cdot\dfrac{2v_0\sin\theta}{g}=\dfrac{v_0^2\,2\sin\theta\cos\theta}{g}` },
+        { text: 'Use the double-angle identity 2 sinθ cosθ = sin 2θ:', tex: T`R=\dfrac{v_0^2\sin 2\theta}{g}` },
+        { text: 'sin 2θ has its maximum value 1 at 2θ = 90°, so θ = 45° gives the longest range (for h = 0, no drag).' },
+      ],
+    },
+    advanced: [
+      'With linear drag, a = −g ŷ − (b/m) v, the equations separate and the velocity relaxes to a terminal speed. With quadratic drag, as used here, the equations couple: the horizontal speed influences vertical drag and vice versa, and there is no closed form in elementary functions, so we integrate numerically.',
+      'Drag lowers the optimum launch angle below 45° because a flatter trajectory is shorter in time, so drag has less time to bleed away the horizontal speed. Real sports (javelin, shot put, ski jumping) also involve lift, spin (the Magnus effect), and launch height.',
+      'On a large scale, Earth’s curvature and rotation matter: long-range artillery needs the Coriolis force and a g that changes with height. The parabola is the small-scale limit of a Kepler ellipse (see Orbits).',
+    ],
+    assumptions: ['Uniform gravitational field (fine over distances ≪ Earth’s radius)', 'Flat ground', 'Point particle; no spin or lift', 'Drag toggle uses ½ρC_dA/m ≈ 0.02 m⁻¹, a representative value, not a specific ball'],
+    experiments: [
+      { title: 'Find the best angle', do: 'With no drag and h = 0, try 30°, 45°, 60°.', expect: '30° and 60° land at the same spot; 45° goes farthest.', preset: 'Ideal 45°' },
+      { title: 'Same throw, different world', do: 'Switch Earth → Moon.', expect: 'Range and height grow by the ratio 9.81/1.62 ≈ 6.', preset: 'Same throw on the Moon' },
+      { title: 'Turn on drag', do: 'Enable air resistance at 30 m/s.', expect: 'The path becomes asymmetric and the range drops by more than half.', preset: 'Add air resistance' },
+      { title: 'Throw from a cliff', do: 'Use the 20 m cliff preset.', expect: 'The flight is longer and the best angle for range is below 45°.', preset: 'Off a 20 m cliff' },
+    ],
+    applications: [
+      { title: 'Sport and biomechanics', text: 'Coaches optimise release angle and speed in shot put, basketball, and long jump. The optimal angle is below 45° because the release height and the landing level differ.' },
+      { title: 'Ballistics and forensic reconstruction', text: 'Trajectory models estimate impact points and launch conditions of objects from fireworks to debris at accident scenes.' },
+      { title: 'Spacecraft and rocketry', text: 'Early rocket ascent and re-entry paths are first modelled with ballistic arcs before adding aerodynamics.' },
+      { title: 'Medicine', text: 'Droplet dispersal from coughs and sneezes follows ballistic motion at first, then drag and turbulence take over, which informs distancing guidance and mask design.' },
+    ],
+    misconceptions: [
+      { myth: 'A projectile needs a continuing forward force to keep moving.', reality: 'After launch the only force (ignoring drag) is gravity. Horizontal velocity persists by inertia.' },
+      { myth: '45° is always the best angle.', reality: 'Only when launch and landing heights are equal and drag is negligible.' },
+      { myth: 'A heavier object falls faster.', reality: 'In vacuum all objects share the same acceleration g. With drag, mass matters through k = ρC_dA/2m.' },
+    ],
+    history: 'Galileo (1638, Two New Sciences) established that the path is a parabola by combining uniform horizontal motion with uniformly accelerated fall.',
+    quiz: [
+      { q: 'At the very top of an ideal projectile’s flight, which statement is true?', options: ['Velocity is zero', 'Acceleration is zero', 'Vertical velocity is zero, acceleration is still g downward', 'Horizontal velocity is zero'], answer: 2, why: 'At the apex vᵧ = 0 but gravity is still acting, so a = g downward. The horizontal velocity v₀ cosθ is unchanged.' },
+      { q: 'Two throws from level ground at 30° and 60° with the same speed (no drag). How do their ranges compare?', options: ['60° goes farther', '30° goes farther', 'They are equal', 'It depends on the mass'], answer: 2, why: 'R ∝ sin 2θ and sin 60° = sin 120°, so complementary angles give equal range.' },
+      { q: 'You double the launch speed at the same angle (no drag). The range becomes…', options: ['2×', '4×', '√2×', '8×'], answer: 1, why: 'R ∝ v₀². Doubling v₀ quadruples R.' },
+      { q: 'Compared with the ideal parabola, a path with air resistance is…', options: ['Higher and longer', 'Lower, shorter, steeper on the way down', 'Identical', 'Straight'], answer: 1, why: 'Drag removes energy continuously, so the object reaches less height and range, and the descent is steeper than the ascent.' },
+    ],
+    takeaway: 'Horizontal and vertical motion are independent: constant velocity one way, constant acceleration the other, giving a parabola.',
+    related: ['pendulum', 'orbits'],
+  },
+  {
+    id: 'pendulum', title: 'Simple harmonic motion', category: 'Mechanics', level: 'Beginner', duration: '9 min', accent: '#b5a1ff', glyph: '◒',
+    tags: ['oscillation', 'pendulum', 'period', 'frequency', 'restoring force', 'energy', 'damping', 'harmonic'],
+    description: 'Discover the restoring force behind repeated oscillations.',
+    question: 'Why does a displaced pendulum swing back and forth, and why is its period nearly independent of how far it swings?',
+    intuition: [
+      'Oscillation needs two ingredients: a restoring force that pulls the system back toward equilibrium, and inertia that makes it overshoot. A displaced pendulum feels a component of gravity along its arc, always pointing toward the lowest point.',
+      'For small angles that restoring force is proportional to the displacement, which is the defining property of simple harmonic motion. Then the motion is a perfect sine wave and the period does not depend on the amplitude or the mass.',
+      'For big swings sin θ is smaller than θ, so the restoring force is weaker than the harmonic approximation. The pendulum takes longer: try the 170° preset and watch the sine-wave overlay fall out of step.',
+    ],
+    equations: [
+      { label: 'Equation of motion', tex: T`\ddot\theta+\dfrac{g}{L}\sin\theta=0` },
+      { label: 'Small-angle period', tex: T`T_0=2\pi\sqrt{\dfrac{L}{g}},\qquad \omega_0=\sqrt{\dfrac{g}{L}}` },
+      { label: 'Exact period (undamped)', tex: T`T=4\sqrt{\dfrac{L}{g}}\;K\!\left(\sin\dfrac{\theta_0}{2}\right)\approx T_0\left(1+\dfrac{\theta_0^2}{16}+\dfrac{11\,\theta_0^4}{3072}+\cdots\right)`, note: 'K is the complete elliptic integral of the first kind.' },
+      { label: 'Energy', tex: T`E=\tfrac12 mL^2\dot\theta^2+mgL(1-\cos\theta)` },
+      { label: 'Damped small oscillations', tex: T`\ddot\theta+b\dot\theta+\omega_0^2\theta=0\;\Rightarrow\;\theta\propto e^{-bt/2}\cos(\omega_d t)` },
+    ],
+    variables: [
+      { sym: 'L', meaning: 'pendulum length (pivot to centre of mass of the bob)', unit: 'm' }, { sym: 'g', meaning: 'gravitational acceleration', unit: 'm/s²' },
+      { sym: '\\theta_0', meaning: 'release angle (amplitude), in radians in the series', unit: 'rad' }, { sym: 'b', meaning: 'damping rate', unit: 's⁻¹' }, { sym: '\\omega_0', meaning: 'natural angular frequency', unit: 'rad/s' },
+    ],
+    derivation: {
+      title: 'From torque to T = 2π√(L/g)',
+      steps: [
+        { text: 'Take torques about the pivot. Gravity’s moment arm is L sinθ, and the moment of inertia of a point bob is mL²:', tex: T`mL^2\ddot\theta=-mgL\sin\theta` },
+        { text: 'Cancel mL. The mass has disappeared, which is why the period does not depend on it:', tex: T`\ddot\theta=-\dfrac{g}{L}\sin\theta` },
+        { text: 'For small angles sinθ ≈ θ, so we obtain the harmonic oscillator equation:', tex: T`\ddot\theta=-\omega_0^2\,\theta,\qquad \omega_0^2=\dfrac{g}{L}` },
+        { text: 'Its solution is θ(t) = θ₀ cos(ω₀t), with period:', tex: T`T_0=\dfrac{2\pi}{\omega_0}=2\pi\sqrt{\dfrac{L}{g}}` },
+      ],
+    },
+    advanced: [
+      'Why is the exact period longer? Multiply the equation of motion by θ̇ and integrate to get energy conservation. Solving for dt = dθ/θ̇ and integrating a quarter swing gives an elliptic integral: T = 4√(L/g)·K(k) with k = sin(θ₀/2). The simulation computes K by the arithmetic–geometric mean.',
+      'The pendulum is the standard bridge to nonlinear dynamics. Its phase portrait (θ, θ̇) shows closed orbits for oscillation and a separatrix at the unstable upright position (E = 2mgL), beyond which the pendulum rotates instead of oscillating. Adding a periodic drive yields chaos.',
+      'Harmonic motion is universal: any smooth potential near a stable minimum looks like ½kx². That is why springs, molecular vibrations, LC circuits, and quantised fields all share the same mathematics.',
+    ],
+    assumptions: ['Point mass on a massless, rigid rod or string', 'Frictionless pivot (damping added explicitly)', 'Uniform g', 'Small-angle formulas are labelled as such; the simulation integrates the full nonlinear equation (RK4)'],
+    experiments: [
+      { title: 'The 5° vs 120° test', do: 'Compare the two presets and read the “Difference” readout.', expect: 'At 5° the period differs from T₀ by about 0.02 %; at 120° by about 37 %.', preset: 'Big swing (120°)' },
+      { title: 'Length changes the period, mass does not', do: 'Quadruple the length from 0.5 m to 2 m.', expect: 'The period doubles because T ∝ √L. There is no mass slider because mass cancels out.' },
+      { title: 'A moon clock', do: 'Select Moon gravity.', expect: 'The period grows by √(9.81/1.62) ≈ 2.5.', preset: 'Same pendulum on the Moon' },
+      { title: 'Watch the energy drain', do: 'Turn on damping and watch the total energy bar.', expect: 'The amplitude decays like e^(−bt/2); energy decays twice as fast.', preset: 'Add damping' },
+    ],
+    applications: [
+      { title: 'Timekeeping', text: 'Pendulum clocks (Huygens, 1656) dominated precise timekeeping for nearly 300 years.' },
+      { title: 'Measuring g', text: 'Precise pendulums map tiny gravity variations that reveal oil deposits, mountains, and groundwater.' },
+      { title: 'Seismology and buildings', text: 'Tuned mass dampers (a giant pendulum, as in Taipei 101) cancel resonant sway of skyscrapers during wind and earthquakes.' },
+      { title: 'Biomechanics', text: 'A swinging leg during walking behaves roughly like a physical pendulum; the preferred walking speed is linked to its natural frequency.' },
+    ],
+    misconceptions: [
+      { myth: 'A heavier bob swings faster.', reality: 'The period is independent of mass, because gravity’s pull and the inertia both scale with m.' },
+      { myth: 'T = 2π√(L/g) is always exact.', reality: 'It is the small-angle limit. A 60° swing is already ≈ 7 % slower.' },
+      { myth: 'At the lowest point the force is zero.', reality: 'The tangential force is zero there, but the tension exceeds mg to supply the centripetal force.' },
+    ],
+    history: 'Galileo noticed isochronism by watching a swinging lamp in Pisa cathedral (the story is partly legendary). Huygens proved in 1673 that the pendulum is only approximately isochronous and designed a cycloidal one that is exactly so.',
+    quiz: [
+      { q: 'A pendulum’s length is quadrupled. Its small-angle period…', options: ['doubles', 'quadruples', 'halves', 'is unchanged'], answer: 0, why: 'T ∝ √L, and √4 = 2.' },
+      { q: 'Which quantity does NOT affect the small-angle period of an ideal pendulum?', options: ['Length', 'g', 'Mass of the bob', 'All three affect it'], answer: 2, why: 'Mass cancels in the equation of motion.' },
+      { q: 'At the bottom of the swing, the pendulum’s…', options: ['kinetic energy is maximum', 'potential energy is maximum', 'speed is zero', 'acceleration is zero'], answer: 0, why: 'All the potential energy has become kinetic. The acceleration is not zero: it points up (centripetal).' },
+      { q: 'For a 170° release the true period is, compared with 2π√(L/g),', options: ['the same', 'shorter', 'much longer', 'exactly double'], answer: 2, why: 'The restoring force is much weaker than the linear approximation, so the period is more than twice T₀.' },
+    ],
+    takeaway: 'A restoring force proportional to displacement plus inertia gives sinusoidal oscillation; beyond small angles, nonlinearity lengthens the period.',
+    related: ['projectile', 'orbits', 'quantum'],
+  },
+  {
+    id: 'orbits', title: 'Orbits and Kepler’s laws', category: 'Mechanics', level: 'Intermediate', duration: '10 min', accent: '#ffd98a', glyph: '☉',
+    tags: ['gravity', 'kepler', 'ellipse', 'planets', 'satellite', 'escape velocity', 'angular momentum', 'conservation'],
+    description: 'See why planets trace ellipses and sweep out equal areas in equal times.',
+    question: 'What keeps a satellite from falling, and why does a planet speed up as it nears the Sun?',
+    intuition: [
+      'An orbit is a continual fall that keeps missing. Imagine firing a cannonball sideways from a very tall mountain: faster shots land farther away. At the circular speed the ground curves away as fast as the ball falls, and it never lands.',
+      'Gravity pulls toward the Sun, so it cannot twist the planet around the Sun. The angular momentum is conserved. A smaller distance therefore forces a higher speed, which is Kepler’s second law: the line from Sun to planet sweeps equal areas in equal times (the coloured wedges).',
+      'Launch faster than circular and the orbit becomes an ellipse reaching farther out. At √2 times the circular speed the energy hits zero and the planet escapes.',
+    ],
+    equations: [
+      { label: 'Newton’s law of gravitation', tex: T`F=\dfrac{GMm}{r^2}` },
+      { label: 'Kepler I: orbits are conic sections', tex: T`r(\varphi)=\dfrac{p}{1+e\cos\varphi},\qquad p=\dfrac{L^2}{GMm^2}` },
+      { label: 'Kepler II: equal areas', tex: T`\dfrac{dA}{dt}=\dfrac{L}{2m}=\text{const}` },
+      { label: 'Kepler III', tex: T`T^2=\dfrac{4\pi^2}{GM}\,a^3` },
+      { label: 'Vis-viva (speed at distance r)', tex: T`v^2=GM\left(\dfrac{2}{r}-\dfrac{1}{a}\right)` },
+      { label: 'Circular and escape speeds', tex: T`v_c=\sqrt{\dfrac{GM}{r}},\qquad v_{esc}=\sqrt{\dfrac{2GM}{r}}=\sqrt2\,v_c` },
+    ],
+    variables: [
+      { sym: 'G', meaning: 'gravitational constant', unit: '6.674×10⁻¹¹ N·m²/kg²' }, { sym: 'M', meaning: 'central mass', unit: 'kg' },
+      { sym: 'a', meaning: 'semi-major axis', unit: 'm' }, { sym: 'e', meaning: 'eccentricity (0 = circle, 0 < e < 1 ellipse, 1 parabola, > 1 hyperbola)' },
+      { sym: 'L', meaning: 'angular momentum', unit: 'kg·m²/s' }, { sym: 'T', meaning: 'orbital period', unit: 's' },
+    ],
+    derivation: {
+      title: 'Kepler’s third law for a circular orbit',
+      steps: [
+        { text: 'Gravity supplies the centripetal force:', tex: T`\dfrac{GMm}{r^2}=\dfrac{mv^2}{r}\;\Rightarrow\;v^2=\dfrac{GM}{r}` },
+        { text: 'The speed equals circumference over period, v = 2πr/T:', tex: T`\dfrac{4\pi^2r^2}{T^2}=\dfrac{GM}{r}` },
+        { text: 'Rearrange:', tex: T`T^2=\dfrac{4\pi^2}{GM}\,r^3` },
+        { text: 'For ellipses replace r by the semi-major axis a. In the simulation units GM = 1, so T²/a³ = 4π² ≈ 39.48 for every orbit.' },
+      ],
+    },
+    advanced: [
+      'Why equal areas? The torque of a central force about the centre is zero, so L = m r²φ̇ is conserved. The area swept per time is ½r²φ̇ = L/2m, a constant.',
+      'The inverse-square law is special: only 1/r² and r (Hooke) potentials give closed orbits (Bertrand’s theorem). Add a small 1/r³ term (as general relativity does) and the ellipse precesses, which explained Mercury’s 43″ per century anomaly.',
+      'Numerically, orbits are a good test for integrators. The simulation uses velocity-Verlet, a symplectic method that keeps the energy error bounded for long runs; plain Euler integration would spiral outward.',
+    ],
+    assumptions: ['Two-body problem with the central mass fixed (valid when M ≫ m)', 'Newtonian gravity, point masses', 'Dimensionless units: GM = 1, starting distance 1; period of the circular orbit is 2π'],
+    experiments: [
+      { title: 'Equal areas', do: 'Choose “Highly elliptical” and watch the wedges.', expect: 'Wedges are long and thin near the aphelion and short and fat near the perihelion but all have equal area.', preset: 'Highly elliptical' },
+      { title: 'Circular vs elliptical', do: 'Compare v = 1.00 and v = 0.85.', expect: 'The circle has e = 0; slower launch from the far point gives e = 1 − v².', preset: 'Gentle ellipse' },
+      { title: 'Check Kepler III', do: 'Look at the T²/a³ readout for different speeds.', expect: 'It stays at 39.48 = 4π² for every bound orbit.' },
+      { title: 'Reach escape speed', do: 'Set v above 1.414.', expect: 'The energy becomes positive and the orbit opens up.', preset: 'Escape (v > √2)' },
+    ],
+    applications: [
+      { title: 'GPS and satellite design', text: 'Orbital period and altitude are linked by Kepler III. GPS satellites orbit at ≈ 20,200 km with a ~12 h period; geostationary ones at 35,786 km match Earth’s 24 h rotation.' },
+      { title: 'Interplanetary missions', text: 'Hohmann transfer orbits use half an ellipse tangent to two circular orbits to move between planets with minimum fuel; gravitational assists reshape orbits.' },
+      { title: 'Exoplanet detection', text: 'Wobbles of stars (radial velocity) and dips in brightness (transits) reveal planets through their orbital periods and Kepler’s laws.' },
+      { title: 'Weighing the Universe', text: 'Orbits of stars around the galactic centre give the mass of the black hole there (≈ 4 million solar masses).' },
+    ],
+    misconceptions: [
+      { myth: 'Astronauts float because there is no gravity.', reality: 'At the ISS’s height gravity is still ≈ 90 % of surface value. They are in continuous free fall.' },
+      { myth: 'Planets move fastest when farthest from the Sun.', reality: 'They are slowest at aphelion and fastest at perihelion.' },
+      { myth: 'Seasons come from Earth’s distance from the Sun.', reality: 'Earth is closest to the Sun in early January; seasons come from the axial tilt.' },
+    ],
+    history: 'Kepler (1609–1619) extracted his laws from Tycho Brahe’s data on Mars. Newton (1687) showed all three follow from an inverse-square force.',
+    quiz: [
+      { q: 'Where in its elliptical orbit does a planet move fastest?', options: ['Aphelion', 'Perihelion', 'Same everywhere', 'At the ends of the minor axis'], answer: 1, why: 'To sweep equal areas in equal times, it must move faster when closer to the Sun.' },
+      { q: 'If an orbit’s semi-major axis is 4 times larger, its period is…', options: ['2×', '4×', '8×', '16×'], answer: 2, why: 'T² ∝ a³, so T ∝ a^{3/2} = 4^{3/2} = 8.' },
+      { q: 'What is the minimum speed (relative to circular speed) to escape from a circular orbit?', options: ['1.0', '√2 ≈ 1.41', '2', 'There is no minimum'], answer: 1, why: 'v_esc = √(2GM/r) = √2·v_c.' },
+      { q: 'Which quantity stays constant throughout an elliptical orbit (ignoring other forces)?', options: ['Speed', 'Distance', 'Angular momentum', 'Gravitational force'], answer: 2, why: 'Gravity is a central force, so it exerts no torque about the Sun.' },
+    ],
+    takeaway: 'An inverse-square central force conserves angular momentum and energy, which yields equal areas, ellipses, and T² ∝ a³.',
+    related: ['projectile', 'pendulum'],
+  },
+]

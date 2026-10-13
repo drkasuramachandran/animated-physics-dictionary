@@ -1,0 +1,197 @@
+import type { Topic } from '../data'
+const T = String.raw
+
+export const modern: Topic[] = [
+  {
+    id: 'decay', title: 'Radioactive decay and half-life', category: 'Modern physics', level: 'Beginner', duration: '8 min', accent: '#a3e635', glyph: '☢',
+    tags: ['half-life', 'nuclear', 'exponential', 'activity', 'randomness', 'isotope', 'carbon dating', 'medical imaging'],
+    description: 'Random events for each nucleus, but a precise law for the crowd.',
+    question: 'If every decay is random, why is the half-life so predictable?',
+    intuition: [
+      'A radioactive nucleus has no memory and no clock. In every small interval it has the same chance of decaying, whether it was made a second ago or a billion years ago. Individual decays are fundamentally unpredictable.',
+      'But a sample contains an enormous number of nuclei. By the law of large numbers the fraction that decays in a given time is extremely predictable: a fixed proportion per unit time, so the number remaining falls exponentially. The half-life is the time for half to go.',
+      'Run the simulation with 100, then 900 nuclei. The small sample wobbles around the smooth curve; the large one hugs it. The relative scatter shrinks like 1/√N.',
+    ],
+    equations: [
+      { label: 'Decay law', tex: T`N(t)=N_0\,e^{-\lambda t}=N_0\,2^{-t/T_{1/2}}` },
+      { label: 'Half-life and mean lifetime', tex: T`T_{1/2}=\dfrac{\ln 2}{\lambda},\qquad \tau=\dfrac1\lambda=\dfrac{T_{1/2}}{\ln2}` },
+      { label: 'Activity', tex: T`A=\lambda N=-\dfrac{dN}{dt},\qquad 1\;\text{Bq}=1\;\text{decay/s}` },
+      { label: 'Statistical scatter (Poisson)', tex: T`\sigma_N\approx\sqrt N,\qquad \dfrac{\sigma_N}{N}=\dfrac1{\sqrt N}` },
+    ],
+    variables: [
+      { sym: 'N', meaning: 'number of undecayed nuclei' }, { sym: '\\lambda', meaning: 'decay constant (probability per unit time per nucleus)', unit: 's⁻¹' },
+      { sym: 'T_{1/2}', meaning: 'half-life', unit: 's' }, { sym: 'A', meaning: 'activity', unit: 'Bq' },
+    ],
+    derivation: {
+      title: 'The exponential law from constant probability',
+      steps: [
+        { text: 'Each nucleus decays with probability λ dt in an interval dt, independent of age. For N nuclei the expected number of decays is λN dt:', tex: T`dN=-\lambda N\,dt` },
+        { text: 'Separate variables and integrate from N₀ at t = 0:', tex: T`\int_{N_0}^{N}\dfrac{dN'}{N'}=-\lambda\int_0^t dt'\;\Rightarrow\;N=N_0e^{-\lambda t}` },
+        { text: 'The half-life is the time at which N = N₀/2:', tex: T`\tfrac12=e^{-\lambda T_{1/2}}\;\Rightarrow\;T_{1/2}=\dfrac{\ln 2}{\lambda}` },
+        { text: 'After n half-lives the fraction left is 2⁻ⁿ: 50 %, 25 %, 12.5 %… never exactly zero, but eventually far below one nucleus, where the law gives way to randomness.' },
+      ],
+    },
+    advanced: [
+      'Why is the decay probability constant? Quantum tunnelling through a barrier (alpha decay) or a weak-interaction transition (beta decay) depends on the nucleus’s unchanging internal state, and the nucleus does not “age”. The exponential law is the signature of a memoryless process.',
+      'Decay chains (Bateman equations) describe a parent producing a daughter that is itself radioactive. Transient and secular equilibrium arise when the parent’s half-life is longer than the daughter’s: the idea behind a ⁹⁹Mo/⁹⁹ᵐTc generator.',
+      'Measured count rates are Poisson-distributed: counting N events has uncertainty √N. To halve the relative error of a count measurement you need four times as many counts.',
+    ],
+    assumptions: ['Single isotope, no decay chain or production', 'Simulation time is scaled: 1 s here stands for any unit of time, you choose', 'Each nucleus is tested independently every frame (probability 1 − e^(−λΔt))'],
+    experiments: [
+      { title: 'Noisy vs smooth', do: 'Compare 100 and 900 nuclei.', expect: 'The 100-nucleus curve is visibly jagged; the 900-nucleus curve follows the dashed theory closely.', preset: 'Small sample (100): noisy' },
+      { title: 'Straight line on a log axis', do: 'Switch on the logarithmic axis.', expect: 'An exponential becomes a straight line; the slope is −λ.', preset: 'Log axis → straight line' },
+      { title: 'Measure the half-life', do: 'Read the time at which the green line crosses 50 %.', expect: 'It is near the T½ you chose, with scatter that shrinks as N grows.' },
+      { title: 'Short-lived isotope', do: 'Set T½ = 1 s.', expect: 'The activity starts at λN₀ = 0.69 N₀ per second and drops quickly.', preset: 'Short-lived isotope' },
+    ],
+    applications: [
+      { title: 'Nuclear medicine (SPECT)', text: 'Technetium-99m (T½ ≈ 6.0 h, 140 keV gamma) is used in a majority of diagnostic nuclear-medicine scans. Its half-life is long enough to image and short enough to limit dose.' },
+      { title: 'PET imaging', text: 'Fluorine-18 (T½ ≈ 110 min) labels FDG, a glucose analogue, so tumours and brain activity show up; the half-life dictates how quickly it must be produced and delivered.' },
+      { title: 'Radiotherapy', text: 'Iodine-131 (T½ ≈ 8 days) treats thyroid disease; sealed sources of Ir-192 and Cs-137 are used in brachytherapy. Half-life determines dose planning and waste handling.' },
+      { title: 'Radiocarbon dating', text: 'Carbon-14 (T½ = 5,730 years) in once-living material decays after death; the remaining fraction gives the age up to ~50,000 years.' },
+    ],
+    misconceptions: [
+      { myth: 'After two half-lives everything has decayed.', reality: 'After two half-lives 25 % remains. The decay is exponential, so it never fully ends.' },
+      { myth: 'A nucleus “knows” when it is due to decay.', reality: 'Decay is memoryless: an old nucleus is as likely to decay in the next second as a new one.' },
+      { myth: 'A short half-life means more dangerous.', reality: 'It means higher activity per atom, but danger depends on the type and energy of radiation, the dose, and the exposure route.' },
+    ],
+    history: 'Rutherford and Soddy (1902) found that radioactivity decreases exponentially and proposed that atoms transmute. The term “half-life” was introduced by Rutherford in 1907.',
+    quiz: [
+      { q: 'A sample has a half-life of 10 days. What fraction remains after 30 days?', options: ['1/3', '1/6', '1/8', '0'], answer: 2, why: '30 days is three half-lives: (1/2)³ = 1/8.' },
+      { q: 'A single nucleus has survived for 2 half-lives. The probability that it decays in the next half-life is…', options: ['25 %', '50 %', '75 %', '100 %'], answer: 1, why: 'Decay is memoryless: the chance in any half-life is 50 %.' },
+      { q: 'You count 400 decays in a minute. The expected statistical uncertainty is about…', options: ['±1', '±20', '±200', '±400'], answer: 1, why: 'σ ≈ √400 = 20, a 5 % relative error.' },
+      { q: 'Plotted on a logarithmic vertical axis, N(t) is…', options: ['a parabola', 'a straight line', 'a sine wave', 'a horizontal line'], answer: 1, why: 'ln N = ln N₀ − λt is linear in t.' },
+    ],
+    takeaway: 'Unpredictable individual events, predictable ensemble: a constant decay probability produces an exponential law and a fixed half-life.',
+    related: ['quantum', 'doubleslit', 'gas'],
+  },
+  {
+    id: 'quantum', title: 'The quantum particle in a box', category: 'Modern physics', level: 'Advanced', duration: '12 min', accent: '#ff85c2', glyph: 'ψ',
+    tags: ['wavefunction', 'schrodinger', 'quantisation', 'energy levels', 'superposition', 'born rule', 'quantum dot', 'zero-point energy'],
+    description: 'Probability amplitudes, quantised energy, and what a superposition really is.',
+    question: 'If we cannot describe an electron as a tiny planet, what can we predict?',
+    intuition: [
+      'A quantum state is described by a wavefunction ψ(x). It is a complex amplitude, not a probability. The probability density for finding the particle near x is |ψ(x)|², and the total probability over all x is 1.',
+      'Confine the particle to a box and the wavefunction must vanish at the walls, like a guitar string fixed at both ends. Only certain standing waves fit: n half-wavelengths in the box. This is why the energy is quantised: E = n²·E₁.',
+      'The lowest allowed energy is not zero. Squeezing the particle into a smaller space requires shorter wavelengths, so the confinement energy rises as 1/L². Narrow the box in the lab and watch the energy readouts grow.',
+      'A superposition of two levels is not “either one or the other”. The wavefunction is the sum of both, and its density oscillates at the beat frequency ΔE/h, in step with the light that would be emitted in a transition.',
+    ],
+    equations: [
+      { label: 'Time-independent Schrödinger equation', tex: T`-\dfrac{\hbar^2}{2m}\dfrac{d^2\psi}{dx^2}+V(x)\psi=E\psi` },
+      { label: 'Eigenstates in a box of width L', tex: T`\psi_n(x)=\sqrt{\dfrac2L}\sin\dfrac{n\pi x}{L},\qquad n=1,2,3,\ldots` },
+      { label: 'Energy levels', tex: T`E_n=\dfrac{n^2h^2}{8mL^2}=n^2E_1`, note: 'For an electron in a 1 nm box E₁ ≈ 0.376 eV.' },
+      { label: 'Born rule and normalisation', tex: T`\rho(x)=|\psi(x)|^2,\qquad \int_0^L|\psi|^2dx=1` },
+      { label: 'Time dependence of a superposition', tex: T`\Psi(x,t)=c_1\psi_1e^{-iE_1t/\hbar}+c_2\psi_2e^{-iE_2t/\hbar}` },
+      { label: 'Emitted photon', tex: T`h\nu=E_2-E_1,\qquad \lambda=\dfrac{hc}{\Delta E}` },
+    ],
+    variables: [
+      { sym: '\\psi', meaning: 'wavefunction (probability amplitude)' }, { sym: '\\rho', meaning: 'probability density', unit: 'm⁻¹' }, { sym: 'L', meaning: 'box width', unit: 'm' },
+      { sym: 'h,\\;\\hbar', meaning: 'Planck constant and reduced Planck constant', unit: 'J·s' }, { sym: 'c_1,\\;c_2', meaning: 'amplitudes; |cₖ|² is the probability of measuring Eₖ' },
+    ],
+    derivation: {
+      title: 'Why the energy is quantised',
+      steps: [
+        { text: 'Inside the box V = 0, so the equation is ψ″ = −k²ψ with k² = 2mE/ħ². The general solution is a combination of sin kx and cos kx.' },
+        { text: 'The wavefunction must be continuous, and the walls are impenetrable, so ψ(0) = 0 and ψ(L) = 0. The first condition removes the cosine: ψ = A sin kx.' },
+        { text: 'The second condition requires the sine to vanish at x = L:', tex: T`\sin kL=0\;\Rightarrow\;k=\dfrac{n\pi}{L}` },
+        { text: 'Substituting back into E = ħ²k²/2m gives the discrete spectrum:', tex: T`E_n=\dfrac{\hbar^2\pi^2n^2}{2mL^2}=\dfrac{n^2h^2}{8mL^2}` },
+        { text: 'Normalisation ∫|ψ|²dx = 1 fixes A = √(2/L). The smallest energy (n = 1) is above zero: zero-point energy, a consequence of the uncertainty principle.' },
+      ],
+    },
+    advanced: [
+      'The wavefunction can be complex. Its real and imaginary parts (cyan and purple in the lab) rotate into one another at the rate E/ħ, but |ψ|² of a single eigenstate does not change. That is why these states are called stationary.',
+      'The states ψₙ form a complete orthonormal set. Any wavefunction in the box can be written Σcₙψₙ, with |cₙ|² the probability to measure Eₙ and ⟨E⟩ = Σ|cₙ|²Eₙ. Measuring position “collapses” the state in the usual (Copenhagen) description; interpretations differ, the predictions do not.',
+      'A real quantum dot is a 3-D box of a few nm in a semiconductor. Smaller dots have a larger gap, so they emit bluer light; this size tuning is used in displays, solar cells, and bio-imaging labels.',
+    ],
+    assumptions: ['Infinite potential walls and a one-dimensional box', 'Electron mass (readouts); the picture is the same for any particle with the right E₁', 'Time scale slowed for display; the detections are random samples from the instantaneous |ψ(x,t)|²'],
+    experiments: [
+      { title: 'Count the nodes', do: 'Go through n = 1, 2, 3 with weight 0.', expect: 'The state n has n − 1 interior nodes and E ∝ n²: 1, 4, 9.', preset: 'Third level' },
+      { title: 'Squeeze the box', do: 'Reduce L from 1.0 to 0.5 nm.', expect: 'All energies increase fourfold (E ∝ 1/L²).', preset: 'Squeeze the box (0.5 nm)' },
+      { title: 'Build a superposition', do: 'Use n = 1 and 2 at 50 %.', expect: 'The density sloshes between the walls at the beat frequency. The photon wavelength is hc/(E₂ − E₁).', preset: 'Superposition 1 + 2' },
+      { title: 'Born rule', do: 'Watch the fading dots in the ground state.', expect: 'Dots are random but cluster in the middle where |ψ|² is largest.', preset: 'Ground state' },
+    ],
+    applications: [
+      { title: 'Quantum dots and nanotechnology', text: 'Colour is tuned by dot size in QLED displays and fluorescent biological labels.' },
+      { title: 'Semiconductor devices', text: 'Quantum wells in lasers, LEDs, and transistors confine electrons in one dimension, with the box model giving the first estimate of levels.' },
+      { title: 'Molecular spectroscopy', text: 'Conjugated molecules like carotenoids are modelled crudely as 1-D boxes for their π electrons, predicting absorption colours.' },
+      { title: 'Scanning tunnelling microscope', text: 'Wavefunction leakage into the classically forbidden region lets electrons tunnel across a vacuum gap, imaging individual atoms.' },
+    ],
+    misconceptions: [
+      { myth: 'The particle is spread out like a cloud of matter.', reality: 'A detector always finds the whole electron at one place. The cloud is the probability distribution for where.' },
+      { myth: 'ψ is the probability.', reality: 'ψ is an amplitude (complex). The probability density is |ψ|².' },
+      { myth: 'In the ground state, the particle is at rest.', reality: 'It has the kinetic energy E₁ > 0. A box state cannot have zero momentum uncertainty and finite size.' },
+    ],
+    history: 'Schrödinger published his wave equation in 1926. Max Born proposed the probability interpretation the same year and received the Nobel Prize for it in 1954.',
+    quiz: [
+      { q: 'How does the ground-state energy change if the box width doubles?', options: ['doubles', 'halves', 'drops to a quarter', 'increases fourfold'], answer: 2, why: 'E₁ ∝ 1/L², so doubling L divides the energy by 4.' },
+      { q: 'For the state n = 3, how many interior nodes (zeros) does ψ have?', options: ['1', '2', '3', '0'], answer: 1, why: 'The state ψₙ has n − 1 interior nodes.' },
+      { q: 'A particle is in an equal superposition of n = 1 and n = 2. A measurement of energy yields…', options: ['(E₁ + E₂)/2 always', 'E₁ or E₂, each with 50 % probability', 'E₂ − E₁', 'Any value between'], answer: 1, why: 'Energy measurements return an eigenvalue; probabilities are |cₙ|².' },
+      { q: '|ψ(x)|² gives…', options: ['the particle’s energy', 'the probability density to find it near x', 'its momentum', 'its trajectory'], answer: 1, why: 'This is the Born rule.' },
+    ],
+    takeaway: 'Confinement quantises energy; the wavefunction predicts probabilities, and a superposition oscillates at the frequency of the light it can emit.',
+    related: ['doubleslit', 'decay', 'interference'],
+  },
+  {
+    id: 'doubleslit', title: 'Single particles through two slits', category: 'Modern physics', level: 'Advanced', duration: '10 min', accent: '#c4b5fd', glyph: '⫴',
+    tags: ['wave-particle duality', 'interference', 'electron', 'de broglie', 'which-path', 'complementarity', 'diffraction'],
+    description: 'Watch an interference pattern build up one particle at a time.',
+    question: 'How can a single particle “interfere with itself”?',
+    intuition: [
+      'Send electrons (or photons, atoms, even large molecules) toward a barrier with two slits, one at a time. Each lands on the screen as a single dot at a seemingly random place. After thousands of dots, however, a pattern of bright and dark stripes builds up: the same fringes a wave would make.',
+      'The pattern says each particle behaves as if it explores both routes. The probability amplitudes through the two slits add, and the squared sum gives the stripes. We cannot assign the particle to one slit without changing the result.',
+      'Switch on the which-path detector: if the slit can be known, the amplitudes no longer add, so the probabilities do, and the stripes disappear. Whether anyone looks is not the point; what matters is whether the information exists in the environment.',
+    ],
+    equations: [
+      { label: 'De Broglie wavelength', tex: T`\lambda=\dfrac hp=\dfrac{h}{mv}` },
+      { label: 'Two-slit intensity (far field)', tex: T`I(y)\propto\cos^2\!\left(\dfrac{\pi d\,y}{\lambda L}\right)\operatorname{sinc}^2\!\left(\dfrac{\pi a\,y}{\lambda L}\right)` },
+      { label: 'Fringe spacing', tex: T`\Delta y=\dfrac{\lambda L}{d}` },
+      { label: 'Amplitudes add, then square', tex: T`P(y)=|\psi_1+\psi_2|^2=|\psi_1|^2+|\psi_2|^2+2\,\mathrm{Re}(\psi_1^*\psi_2)`, note: 'The last term is the interference term.' },
+      { label: 'With which-path information', tex: T`P(y)=|\psi_1|^2+|\psi_2|^2` },
+    ],
+    variables: [
+      { sym: 'd', meaning: 'slit separation', unit: 'm' }, { sym: 'a', meaning: 'slit width', unit: 'm' }, { sym: 'L', meaning: 'slit-to-screen distance', unit: 'm' },
+      { sym: 'y', meaning: 'position on the screen', unit: 'm' }, { sym: '\\lambda', meaning: 'de Broglie wavelength', unit: 'm' },
+    ],
+    derivation: {
+      title: 'Locating the bright fringes',
+      steps: [
+        { text: 'For a screen far away, the two paths from the slits to a point at height y differ by Δr ≈ d sinθ ≈ d y/L.' },
+        { text: 'The amplitudes arrive with a relative phase φ = 2πΔr/λ. Their sum has probability 2|ψ|²(1 + cos φ), which is proportional to cos²(φ/2).' },
+        { text: 'Bright fringes (maximum probability) occur when the path difference is a whole number of wavelengths:', tex: T`d\sin\theta=m\lambda\;\Rightarrow\;y_m\approx\dfrac{m\lambda L}{d}` },
+        { text: 'The spacing between neighbouring fringes is Δy = λL/d. A smaller wavelength (faster particles) or larger slit spacing squeezes the fringes together, and may make them unresolvable.' },
+        { text: 'The finite slit width a multiplies the pattern by a single-slit diffraction envelope sinc²(πay/λL).' },
+      ],
+    },
+    advanced: [
+      'The key quantum feature is that the interference term appears even when particles are sent one at a time, so it cannot be a collective effect of many particles interacting. Interference has been seen for electrons (Jönsson 1961; Tonomura et al. 1989 with single-electron build-up), neutrons, atoms, and C₆₀ molecules (Arndt et al. 1999).',
+      'Complementarity is quantified: the fringe visibility V and the which-path distinguishability D obey V² + D² ≤ 1. A partial detector gives partial fringes. A “quantum eraser” can restore interference by erasing the which-path record.',
+      'In this lab the particles are not drawn along trajectories because no trajectory consistent with the observed statistics can be assigned to a single particle. Only detection events and the accumulated pattern are physical observations.',
+    ],
+    assumptions: ['Fraunhofer (far-field) approximation', 'Dimensionless screen coordinates; fringes drawn for illustration, not for a specific particle', 'Detector toggle models a perfect which-path marker'],
+    experiments: [
+      { title: 'Be patient', do: 'Lower the rate to 8/s and watch the first 50 dots.', expect: 'They look random; the fringes emerge only after hundreds of detections.', preset: 'Watch the build-up (slow)' },
+      { title: 'Change the spacing', do: 'Increase d.', expect: 'Fringes get narrower (Δy ∝ 1/d).', preset: 'Wider slit spacing' },
+      { title: 'Change the wavelength', do: 'Increase λ (slower particles).', expect: 'Fringes widen (Δy ∝ λ).', preset: 'Longer wavelength' },
+      { title: 'Destroy the interference', do: 'Switch on the which-path detector.', expect: 'The stripes vanish and a broad hump remains.', preset: 'Which-path detector ON' },
+    ],
+    applications: [
+      { title: 'Electron microscopy and diffraction', text: 'Electrons with wavelengths of picometres reveal atomic structure; diffraction patterns identify crystals.' },
+      { title: 'Neutron and atom interferometry', text: 'Matter-wave interferometers measure gravity, rotation (gyroscopes), and fundamental constants with extreme precision.' },
+      { title: 'Quantum technologies', text: 'Superposition of paths is the basis of photonic quantum computing, interferometric sensors, and quantum key distribution.' },
+      { title: 'Testing the limits of quantum theory', text: 'Experiments push interference to larger and larger molecules to probe whether anything limits quantum behaviour at larger scales.' },
+    ],
+    misconceptions: [
+      { myth: 'The electron splits into two halves and goes through both slits.', reality: 'Every detection shows one whole electron. The wavefunction, not the electron, “goes through both”.' },
+      { myth: 'Conscious observation destroys the interference.', reality: 'Any physical interaction that records the path (a detector, a photon scattered into the environment) does it, whether or not a person looks.' },
+      { myth: 'Interference needs many particles to affect each other.', reality: 'It builds up even when particles pass through one at a time.' },
+    ],
+    history: 'Young showed interference of light in 1801. Davisson–Germer (1927) confirmed electron diffraction. Jönsson (1961) did a true electron double-slit. Tonomura’s group (Hitachi, 1989) recorded the single-electron build-up.',
+    quiz: [
+      { q: 'Particles are sent through the slits one at a time. After many detections the screen shows…', options: ['two bands only', 'an interference pattern', 'a uniform glow', 'one random point'], answer: 1, why: 'Each particle lands at one point, but the accumulated probability distribution shows fringes.' },
+      { q: 'A detector records which slit each particle used. The pattern becomes…', options: ['sharper fringes', 'no fringes (two humps)', 'a single dot', 'unchanged'], answer: 1, why: 'With which-path information the amplitudes no longer add coherently.' },
+      { q: 'If you speed up the electrons (shorter λ), the fringes become…', options: ['wider', 'narrower', 'unchanged', 'curved'], answer: 1, why: 'Δy = λL/d decreases as λ decreases. Faster means larger p and shorter λ.' },
+      { q: 'The de Broglie wavelength of a particle is…', options: ['h/p', 'hp', 'p/h', 'h/E'], answer: 0, why: 'λ = h/p.' },
+    ],
+    takeaway: 'Individual detections are random points, but their probabilities come from adding amplitudes; reveal the path, and the interference is gone.',
+    related: ['interference', 'quantum', 'decay'],
+  },
+]

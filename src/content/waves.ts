@@ -1,0 +1,195 @@
+import type { Topic } from '../data'
+const T = String.raw
+
+export const wavesOptics: Topic[] = [
+  {
+    id: 'interference', title: 'Wave interference and beats', category: 'Waves & optics', level: 'Intermediate', duration: '9 min', accent: '#ffbd76', glyph: '∿',
+    tags: ['superposition', 'phase', 'constructive', 'destructive', 'beats', 'amplitude', 'intensity', 'noise cancellation'],
+    description: 'See how waves add together to form patterns.',
+    question: 'How can two waves reinforce each other, or nearly disappear?',
+    intuition: [
+      'When waves overlap, the medium simply adds their displacements point by point: the principle of superposition. Nothing is destroyed. Waves pass through each other unchanged and emerge intact.',
+      'The phase difference φ decides what the sum looks like. If crests align (φ = 0) the sum is larger. If a crest meets a trough of equal size (φ = 180°) the sum is zero at that moment and place. Energy is not lost: it is redistributed to other places.',
+      'If the frequencies differ slightly, the phase difference drifts steadily. The loudness swells and fades at the difference frequency: beats, which tuners use to match two strings by ear.',
+    ],
+    equations: [
+      { label: 'Superposition', tex: T`y(x,t)=y_1(x,t)+y_2(x,t)` },
+      { label: 'Resultant amplitude (two waves, phase φ)', tex: T`A_{res}=\sqrt{A^2+B^2+2AB\cos\varphi}` },
+      { label: 'Equal amplitudes', tex: T`A_{res}=2A\left|\cos\dfrac{\varphi}{2}\right|,\qquad I\propto A_{res}^2` },
+      { label: 'Phase from path difference', tex: T`\varphi=\dfrac{2\pi}{\lambda}\,\Delta r` , note: 'Constructive when Δr = mλ, destructive when Δr = (m + ½)λ.' },
+      { label: 'Beat frequency', tex: T`f_{beat}=|f_1-f_2|` },
+    ],
+    variables: [
+      { sym: 'A,\\;B', meaning: 'amplitudes of the two waves' }, { sym: '\\varphi', meaning: 'phase difference', unit: 'rad' }, { sym: '\\lambda', meaning: 'wavelength', unit: 'm' },
+      { sym: '\\Delta r', meaning: 'path difference', unit: 'm' }, { sym: 'I', meaning: 'intensity (power per area)', unit: 'W/m²' },
+    ],
+    derivation: {
+      title: 'Adding two sine waves with a phase offset',
+      steps: [
+        { text: 'Represent each wave at a fixed point as a rotating arrow (phasor) of length A or B. The angle between them is φ.' },
+        { text: 'The sum is the vector sum, and the law of cosines gives its length (note cos(180° − φ) = −cos φ):', tex: T`A_{res}^2=A^2+B^2-2AB\cos(180^\circ-\varphi)=A^2+B^2+2AB\cos\varphi` },
+        { text: 'For A = B: 1 + cos φ = 2cos²(φ/2), so A_res = 2A|cos(φ/2)|. At φ = 0 it is 2A; at φ = π it is 0.' },
+        { text: 'Intensity scales with the square of the amplitude, so two in-phase equal waves give four times the intensity of one, not two. The extra energy comes from places of destructive interference.' },
+      ],
+    },
+    advanced: [
+      'Sustained, stable interference needs coherence: a fixed phase relationship. Two independent light bulbs do not interfere visibly because their phases wander randomly within nanoseconds or less. Lasers, or a single source split in two, are coherent.',
+      'The simulation draws the exact envelope √(A² + B² + 2AB cos(Δk·x − Δω·t + φ)). With a slight frequency mismatch Δf/f the waves also have different wavenumbers in a non-dispersive medium (k = ω/v), so the beat pattern travels along the medium.',
+      'In two or three dimensions, interference of waves from several sources produces diffraction gratings, phased arrays, holograms, and the fringes of the Michelson interferometer that detected gravitational waves (LIGO measured length changes ~10⁻¹⁸ m).',
+    ],
+    assumptions: ['Linear medium (superposition holds)', 'Both waves have the same speed; shown as travelling in the same direction', 'Frequency mismatch is small (< 12 %) for a clean beat envelope'],
+    experiments: [
+      { title: 'Cancel a wave', do: 'Set φ = 180° and B = 1.', expect: 'The sum is a flat line: complete destructive interference.', preset: 'Destructive (φ = 180°)' },
+      { title: 'Why exact cancellation is hard', do: 'Keep φ = 180° and set B = 0.5.', expect: 'The sum amplitude is |1 − 0.5| = 0.5, not zero. Noise-cancelling headphones need exact amplitude and phase.', preset: 'Unequal amplitudes cancel only partly' },
+      { title: 'Find the intensity gain', do: 'Compare φ = 0 and φ = 90° and read “Intensity vs wave A”.', expect: '4× at φ = 0 and 2× at φ = 90° for equal waves.', preset: 'Constructive (φ = 0°)' },
+      { title: 'Beats', do: 'Raise Δf/f and watch the envelope.', expect: 'The envelope pulses once per beat; at 8 % there are 5 × 0.08 = 0.4 beat periods across the screen.', preset: 'Beats (Δf/f = 8%)' },
+    ],
+    applications: [
+      { title: 'Noise-cancelling headphones', text: 'Microphones sample outside noise and a speaker emits an inverted copy so the sum at the ear is small. It works best for steady low-frequency sound.' },
+      { title: 'Thin-film colours', text: 'Soap bubbles and anti-reflective lens coatings select wavelengths through interference between reflections from the film’s two surfaces.' },
+      { title: 'Interferometry', text: 'Optical coherence tomography (OCT) images the retina at micrometre resolution; LIGO detects gravitational waves.' },
+      { title: 'Musical tuning', text: 'Piano tuners listen for the beat between two nearly equal strings and adjust until it slows to zero.' },
+    ],
+    misconceptions: [
+      { myth: 'Destructive interference destroys the energy.', reality: 'Energy is redistributed. Total power is conserved: places of cancellation are balanced by places of reinforcement.' },
+      { myth: 'Waves bounce off each other when they meet.', reality: 'They pass straight through, and the sum only exists while they overlap.' },
+      { myth: 'Interference only happens with light.', reality: 'Every wave obeys superposition: sound, water, radio, matter waves.' },
+    ],
+    history: 'Thomas Young’s double-slit experiment (1801) demonstrated interference of light and revived the wave theory of light.',
+    quiz: [
+      { q: 'Two equal waves are 180° out of phase. The resultant amplitude is…', options: ['2A', 'A', '0', 'A√2'], answer: 2, why: 'A_res = 2A|cos 90°| = 0.' },
+      { q: 'Two in-phase equal waves of intensity I₀ each meet. The intensity is…', options: ['2I₀', '4I₀', 'I₀', '√2 I₀'], answer: 1, why: 'Amplitudes add (2A) and intensity ∝ amplitude², so 4I₀.' },
+      { q: 'Tones of 440 Hz and 444 Hz are played together. How many beats per second are heard?', options: ['2', '4', '442', '884'], answer: 1, why: 'f_beat = |f₁ − f₂| = 4 Hz.' },
+      { q: 'A path difference of 1.5 wavelengths produces…', options: ['constructive interference', 'destructive interference', 'no interference', 'a standing wave'], answer: 1, why: 'Δr = (m + ½)λ with m = 1 means destructive interference (φ = 3π).' },
+    ],
+    takeaway: 'Waves add. The phase difference decides whether the sum reinforces, cancels, or beats.',
+    related: ['doppler', 'doubleslit', 'snell'],
+  },
+  {
+    id: 'doppler', title: 'The Doppler effect', category: 'Waves & optics', level: 'Beginner', duration: '7 min', accent: '#7ae7c7', glyph: '≋',
+    tags: ['frequency shift', 'sound', 'sonic boom', 'mach number', 'redshift', 'ultrasound', 'radar'],
+    description: 'Why does a siren change pitch as it passes you?',
+    question: 'How can motion change the pitch of a sound that the source never changed?',
+    intuition: [
+      'A source emits a crest every T seconds. If the source is moving toward you, each new crest starts a bit closer than the previous one, so the crests arrive bunched together: shorter wavelength, higher frequency. Behind the source they are stretched apart.',
+      'Neither the speed of sound nor the source’s own frequency changes. What changes is the spacing of the crests. This is why the pitch drops abruptly as an ambulance passes.',
+      'At Mach 1 the source keeps pace with its own wavefronts, and above it the wavefronts form a cone, the shock wave we hear as a sonic boom.',
+    ],
+    equations: [
+      { label: 'Moving source, stationary observer', tex: T`f'=f\,\dfrac{c}{c\mp v_s}`, note: 'Minus when approaching (higher pitch), plus when receding.' },
+      { label: 'Wavelength in front / behind', tex: T`\lambda'_{front}=(c-v_s)T,\qquad \lambda'_{back}=(c+v_s)T` },
+      { label: 'Moving observer, stationary source', tex: T`f'=f\,\dfrac{c\pm v_o}{c}` },
+      { label: 'Mach cone', tex: T`\sin\mu=\dfrac{c}{v_s}=\dfrac{1}{M}` },
+      { label: 'Light (low speed) and cosmological redshift', tex: T`\dfrac{\Delta\lambda}{\lambda}\approx\dfrac{v}{c}` },
+    ],
+    variables: [
+      { sym: 'f', meaning: 'emitted frequency', unit: 'Hz' }, { sym: 'c', meaning: 'wave speed in the medium (≈ 343 m/s in air at 20 °C)', unit: 'm/s' },
+      { sym: 'v_s,\\;v_o', meaning: 'source and observer speeds relative to the medium', unit: 'm/s' }, { sym: 'M', meaning: 'Mach number v_s/c' },
+    ],
+    derivation: {
+      title: 'Frequency heard from an approaching source',
+      steps: [
+        { text: 'In one period T the first crest travels a distance cT. In the same time the source moves v_sT toward the observer. The gap between successive crests is:', tex: T`\lambda'=cT-v_sT=(c-v_s)T` },
+        { text: 'The crests all travel at speed c, so the observer receives them at the frequency c/λ′:', tex: T`f'=\dfrac{c}{\lambda'}=\dfrac{c}{(c-v_s)T}=\dfrac{c}{c-v_s}\,f` },
+        { text: 'For a receding source the gap is (c + v_s)T, giving f′ = f·c/(c + v_s).' },
+        { text: 'As v_s → c the frequency ahead diverges: the wavefronts pile up into a shock front.' },
+      ],
+    },
+    advanced: [
+      'For sound, the medium matters: moving the source and moving the observer give different formulas, because only the medium defines the wave speed. For light there is no medium, and the relativistic Doppler formula depends only on the relative velocity: f′ = f√((1 − β)/(1 + β)) for recession.',
+      'Cosmological redshift is not strictly a Doppler shift: it comes from the expansion of space stretching light on its journey. For small z the two descriptions agree, but they diverge for distant galaxies.',
+      'The general 3-D case involves only the velocity component along the line of sight. A planet passing at closest approach, where that component is zero, has f′ = f. This explains the smooth pitch glide of a passing car.',
+    ],
+    assumptions: ['Source moves along a straight line through the observer’s position', 'Non-dispersive medium at rest; wave speed independent of source motion', 'The simulation uses 440 Hz and 343 m/s for the numbers'],
+    experiments: [
+      { title: 'Ambulance', do: 'Set Mach 0.09 (≈ 30 m/s).', expect: 'About 484 Hz ahead and 404 Hz behind: a drop of about three semitones as it passes.', preset: 'Ambulance (≈ 30 m/s)' },
+      { title: 'Approach Mach 1', do: 'Increase M to 0.95.', expect: 'Ahead, the wavefronts crowd together and f′ climbs to ~8800 Hz.', preset: 'Nearly sonic' },
+      { title: 'Break the sound barrier', do: 'Set M = 1.5.', expect: 'A cone appears with half-angle asin(1/1.5) ≈ 41.8°.', preset: 'Supersonic: Mach 1.5' },
+    ],
+    applications: [
+      { title: 'Medical Doppler ultrasound', text: 'Echoes from moving blood cells are shifted in frequency (typically 2–10 MHz probes); this measures blood velocity and detects stenosis and fetal heartbeat.' },
+      { title: 'Radar guns and weather radar', text: 'Frequency shift of reflected microwaves gives vehicle speed and the wind speed inside storms.' },
+      { title: 'Astronomy', text: 'Spectral line shifts reveal stars’ radial velocities, exoplanet wobbles, and the expansion of the Universe.' },
+      { title: 'Laser Doppler vibrometry', text: 'Contactless measurement of vibrations from machine parts to eardrums.' },
+    ],
+    misconceptions: [
+      { myth: 'The source’s pitch changes as it moves.', reality: 'It emits at the same frequency; the observer receives crests at a different rate.' },
+      { myth: 'A sonic boom happens only at the moment a plane breaks the sound barrier.', reality: 'The boom cone sweeps over the ground continuously for as long as the plane is supersonic.' },
+      { myth: 'Doppler shift for light works exactly like for sound.', reality: 'Light needs no medium; relativistic effects add a transverse shift even when the motion is perpendicular to the line of sight.' },
+    ],
+    history: 'Christian Doppler proposed the effect in 1842 to explain star colours. Buys Ballot confirmed it for sound in 1845 using trumpeters on a moving train.',
+    quiz: [
+      { q: 'A siren moves toward you. Compared with the siren’s own frequency you hear a…', options: ['lower frequency', 'higher frequency', 'same frequency', 'louder wave only'], answer: 1, why: 'Crests are compressed, wavelength shortens, and the frequency rises.' },
+      { q: 'The speed of sound in the air is 343 m/s. A 440 Hz source recedes at 34.3 m/s. The heard frequency is…', options: ['400 Hz', '440 Hz', '484 Hz', '360 Hz'], answer: 0, why: 'f′ = 440 · 343/(343 + 34.3) = 400 Hz.' },
+      { q: 'A jet flies at Mach 2. The half-angle of its shock cone is…', options: ['60°', '30°', '45°', '90°'], answer: 1, why: 'sin μ = 1/M = 0.5, so μ = 30°.' },
+      { q: 'Which changes when a source moves?', options: ['Wave speed in the medium', 'Spacing between crests', 'Source’s emitted frequency', 'The medium’s density'], answer: 1, why: 'Crest spacing (wavelength) changes; wave speed is set by the medium.' },
+    ],
+    takeaway: 'Relative motion compresses or stretches the crest spacing, shifting the observed frequency without changing the source.',
+    related: ['interference', 'snell'],
+  },
+  {
+    id: 'snell', title: 'Refraction, reflection and total internal reflection', category: 'Waves & optics', level: 'Intermediate', duration: '10 min', accent: '#70aaff', glyph: '⟋',
+    tags: ['snell', 'refractive index', 'critical angle', 'fibre optics', 'fresnel', 'brewster', 'light'],
+    description: 'Follow a light ray across a boundary and see where the light goes.',
+    question: 'Why does light bend when it enters water, and why does it sometimes refuse to leave glass?',
+    intuition: [
+      'Light travels more slowly in a transparent material than in vacuum, by a factor n called the refractive index. When a wavefront hits a boundary at an angle, one side of the front enters the slower medium first and slows down, so the front pivots, like a car steering when one wheel hits mud.',
+      'Going into a slower medium, the ray bends toward the normal. Going into a faster medium, it bends away. If the bending would require an angle beyond 90°, there is no refracted ray at all, and 100 % of the light is reflected: total internal reflection.',
+      'Even when refraction is possible, a fraction of the light always reflects. How much depends on the angle and the polarisation. At Brewster’s angle, light polarised in the plane of incidence is not reflected at all.',
+    ],
+    equations: [
+      { label: 'Refractive index', tex: T`n=\dfrac{c}{v}` },
+      { label: 'Snell’s law', tex: T`n_1\sin\theta_1=n_2\sin\theta_2` },
+      { label: 'Critical angle (n₁ > n₂)', tex: T`\theta_c=\arcsin\dfrac{n_2}{n_1}` },
+      { label: 'Fresnel reflectance (unpolarised)', tex: T`R=\tfrac12\left(r_s^2+r_p^2\right),\quad r_s=\dfrac{n_1\cos\theta_1-n_2\cos\theta_2}{n_1\cos\theta_1+n_2\cos\theta_2},\quad r_p=\dfrac{n_2\cos\theta_1-n_1\cos\theta_2}{n_2\cos\theta_1+n_1\cos\theta_2}` },
+      { label: 'Brewster’s angle', tex: T`\tan\theta_B=\dfrac{n_2}{n_1}` },
+      { label: 'Normal incidence', tex: T`R=\left(\dfrac{n_1-n_2}{n_1+n_2}\right)^2` },
+    ],
+    variables: [
+      { sym: 'n_1,\\;n_2', meaning: 'refractive indices of the two media (air ≈ 1.0003, water ≈ 1.33, glass ≈ 1.5, diamond ≈ 2.42)' },
+      { sym: '\\theta_1,\\;\\theta_2', meaning: 'angles of incidence and refraction, from the normal', unit: '°' }, { sym: 'v', meaning: 'speed of light in the medium', unit: 'm/s' },
+      { sym: 'r_s,\\;r_p', meaning: 'Fresnel amplitude coefficients for s- and p-polarisation' },
+    ],
+    derivation: {
+      title: 'Snell’s law from wavefront geometry',
+      steps: [
+        { text: 'Let a plane wavefront strike the boundary. In the time Δt, the end of the wavefront that is already in medium 2 travels v₂Δt, while the other end travels v₁Δt in medium 1 until it reaches the boundary.' },
+        { text: 'Let AB be the length along the boundary spanned in that time. Basic trigonometry on the two right triangles gives:', tex: T`AB\sin\theta_1=v_1\Delta t,\qquad AB\sin\theta_2=v_2\Delta t` },
+        { text: 'Divide the two equations and use v = c/n:', tex: T`\dfrac{\sin\theta_1}{\sin\theta_2}=\dfrac{v_1}{v_2}=\dfrac{n_2}{n_1}\;\Rightarrow\;n_1\sin\theta_1=n_2\sin\theta_2` },
+        { text: 'Alternatively, Fermat’s principle: light takes the path of least (stationary) time, and minimising total travel time across the boundary gives the same law.' },
+      ],
+    },
+    advanced: [
+      'The Fresnel equations follow from Maxwell’s equations: the tangential components of E and H must be continuous across the boundary. They predict the reflection amplitude for s and p polarisations separately, and a phase flip on reflection from a denser medium.',
+      'During total internal reflection an evanescent wave penetrates a fraction of a wavelength into the second medium. Frustrating it (placing another surface close by) transmits some light: this is the basis of TIRF microscopy and fingerprint scanners.',
+      'n depends on wavelength (dispersion). Blue light bends more than red in glass, which creates rainbows and chromatic aberration. Negative-index metamaterials, by contrast, bend light the “wrong” way.',
+    ],
+    assumptions: ['Smooth, flat boundary; homogeneous, non-absorbing media', 'Monochromatic light (single n); the simulation ignores dispersion', 'Ray drawn is the average over s- and p-polarisations'],
+    experiments: [
+      { title: 'Bending toward the normal', do: 'Air → water at 45°.', expect: 'θ₂ ≈ 32° and only about 3 % of the light reflects.', preset: 'Air → water' },
+      { title: 'Total internal reflection', do: 'Glass → air at 50°.', expect: 'Critical angle is 41.8°. Beyond it there is no refracted ray, and all of the light reflects.', preset: 'Glass → air (total internal reflection)' },
+      { title: 'Zero p-polarised reflection', do: 'Set air → glass at 56°.', expect: 'Brewster’s angle is 56.3°. The reflected light is purely s-polarised (all the p component is transmitted), so the unpolarised R is about 7 %.', preset: 'Brewster angle (air → glass)' },
+      { title: 'Why diamonds sparkle', do: 'Use diamond → air at 30°.', expect: 'The critical angle is only 24.4°, so many internal rays are trapped and bounce around.', preset: 'Diamond → air' },
+    ],
+    applications: [
+      { title: 'Fibre-optic communication', text: 'Light is guided in a glass core by total internal reflection, carrying internet traffic across oceans.' },
+      { title: 'Medical endoscopy and OCT', text: 'Bundles of flexible fibres carry images from inside the body; refractive-index contrast gives OCT its depth images.' },
+      { title: 'Lenses, glasses and cameras', text: 'Curved refracting surfaces focus light by Snell’s law. The eye’s cornea does about two-thirds of the focusing.' },
+      { title: 'Polarising sunglasses', text: 'Glare reflected from water or roads is largely horizontally polarised near Brewster’s angle; vertical polarisers block it.' },
+    ],
+    misconceptions: [
+      { myth: 'Light slows down because it collides with atoms.', reality: 'The wave in the medium is a superposition of the incident field and fields re-radiated by the electrons. Between atoms light still travels at c; the net phase velocity is c/n.' },
+      { myth: 'Total internal reflection can happen going from air into glass.', reality: 'It needs n₁ > n₂. Going into a denser medium, there is always a refracted ray.' },
+      { myth: 'Reflection and refraction are alternatives.', reality: 'Both happen at the same time; their shares (R and 1 − R) depend on angle and polarisation.' },
+    ],
+    history: 'Ibn Sahl (c. 984) described the law first; Snell rediscovered it in 1621 and Descartes published it in 1637. Fermat derived it from his least-time principle in 1662.',
+    quiz: [
+      { q: 'Light passes from air into water. Compared with the normal, the refracted ray…', options: ['bends toward it', 'bends away from it', 'does not bend', 'always reflects'], answer: 0, why: 'Water has a higher index, so light slows down and bends toward the normal.' },
+      { q: 'What is the critical angle for water (n = 1.33) to air?', options: ['≈ 49°', '≈ 41°', '≈ 62°', '90°'], answer: 0, why: 'θ_c = arcsin(1/1.33) = 48.8°.' },
+      { q: 'Total internal reflection requires…', options: ['n₁ < n₂', 'n₁ > n₂ and θ₁ > θ_c', 'a perfectly polished surface only', 'normal incidence'], answer: 1, why: 'Light must start in the denser medium and hit the boundary beyond the critical angle.' },
+      { q: 'At normal incidence from air (n = 1) to glass (n = 1.5), roughly what fraction reflects?', options: ['4 %', '25 %', '50 %', '0 %'], answer: 0, why: 'R = ((1.5 − 1)/(1.5 + 1))² = 0.04.' },
+    ],
+    takeaway: 'Speed changes at a boundary make the wavefront pivot. Snell’s law fixes the angle, and Fresnel’s equations fix how much reflects.',
+    related: ['interference', 'doppler', 'doubleslit'],
+  },
+]
